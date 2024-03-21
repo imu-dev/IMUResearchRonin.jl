@@ -1,0 +1,19 @@
+name = "IMUReplRonin"
+uuid = "95c10d2a-8732-4919-b9bb-bf23f71fa7d2"
+authors = ["Marcin Mider <marcin.mider@gmail.com> and contributors"]
+version = "0.1.0"
+
+[deps]
+HDF5 = "f67ccb44-e63f-5c2f-98bd-6dc0ccc4ba2f"
+JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
+Quaternions = "94ee1d12-ae83-5a48-8b1c-48b8ff168ae0"
+TOML = "fa267f1f-6049-4f14-aa54-33bafae1ed76"
+
+[compat]
+julia = "1.10"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
