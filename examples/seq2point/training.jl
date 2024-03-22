@@ -8,6 +8,7 @@ using IMUDevNNArchitectures.ResNet1d
 using IMUDevNNTrainingLib
 using IMUReplRonin
 using Lux
+using LuxCUDA
 using Optimisers
 using MLUtils
 using Random
@@ -21,7 +22,7 @@ const NNTrLib = IMUDevNNTrainingLib
 
 include(joinpath(@__DIR__, "..", "utils.jl"))
 
-USE_GPUs = false
+USE_GPUs = true
 VALIDATE = true
 
 rng = Random.default_rng()
@@ -59,7 +60,7 @@ parameters, states, opt_state, log, plateau_detector = if isnothing(chkp_data)
     # Plateau detector
     pd = PlateauDetector(; scheduler=Stateful(Exp(init_learning_rate, 0.8f0)))
 
-    ps, st, opt_state, [], pd
+    device(ps), device(st), device(opt_state), [], pd
 else
     ps, st, opt_state, log, others = chkp_data
     pd = others[:plateau_detector]
@@ -105,7 +106,8 @@ for epoch in start_epoch:30
         input, labels = preprocess_data(input, labels)
 
         # Pass the data through the network and compute the gradients
-        (loss, y°, st), back = pullback(computeloss, input, labels, model, ps, st)
+        (loss, y°, st), back = pullback(computeloss, input, labels, model, parameters,
+                                        states)
 
         # store the loss and discard the step in a degenerate case
         push!(losses, loss)
@@ -119,7 +121,7 @@ for epoch in start_epoch:30
 
         # Fetch the previously computed gradients and update the parameters
         gs = back((one(loss), nothing, nothing))[4]
-        opt_state, ps = Optimisers.update(opt_state, ps, gs)
+        opt_state, parameters = Optimisers.update(opt_state, parameters, gs)
 
         # Update learning rate if needed
         if NNTrLib.step!(plateau_detector, loss)
@@ -143,7 +145,7 @@ for epoch in start_epoch:30
             input, labels = preprocess_data(input, labels)
 
             # Pass the data through the network
-            (loss, y°, st) = computeloss(input, labels, model, ps, st)
+            (loss, y°, states) = computeloss(input, labels, model, parameters, states)
 
             # store the loss
             push!(losses, loss)
@@ -159,7 +161,7 @@ for epoch in start_epoch:30
         push!(log, (; train=train_log))
     end
 
-    checkpoint(chkp, epoch; parameters=ps, states=st, opt_state, log, plateau_detector)
+    checkpoint(chkp, epoch; parameters, states, opt_state, log, plateau_detector)
 
     if avg_loss < 1e-3
         println("stopping after $epoch epochs")
