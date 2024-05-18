@@ -1,6 +1,6 @@
-using IMUReplRonin
+using IMUResearchRonin
 using Test
 
-@testset "IMUReplRonin.jl" begin
+@testset "IMUResearchRonin.jl" begin
     # Write your tests here.
 end

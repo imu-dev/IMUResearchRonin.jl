@@ -18,7 +18,7 @@ read_data_from_file(path) =
         return read(file)
     end
 
-path_to_examples_dir() = joinpath(dirname(pathof(IMUReplRonin)), "..", "examples")
+path_to_examples_dir() = joinpath(dirname(pathof(IMUResearchRonin)), "..", "examples")
 
 """Path to the output directory"""
 function outdir(path_to_env_file=joinpath(path_to_examples_dir(), ".env.toml"))

@@ -1,4 +1,4 @@
-name = "IMUReplRonin"
+name = "IMUResearchRonin"
 uuid = "95c10d2a-8732-4919-b9bb-bf23f71fa7d2"
 authors = ["Marcin Mider <marcin.mider@gmail.com> and contributors"]
 version = "0.1.0"
@@ -10,6 +10,10 @@ Quaternions = "94ee1d12-ae83-5a48-8b1c-48b8ff168ae0"
 TOML = "fa267f1f-6049-4f14-aa54-33bafae1ed76"
 
 [compat]
+HDF5 = "0.17"
+JSON = "0.21"
+Quaternions = "0.7"
+TOML = "1"
 julia = "1.10"
 
 [extras]

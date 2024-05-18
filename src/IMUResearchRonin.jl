@@ -1,4 +1,4 @@
-module IMUReplRonin
+module IMUResearchRonin
 
 using HDF5
 using JSON

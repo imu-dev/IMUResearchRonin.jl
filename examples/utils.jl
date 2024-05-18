@@ -1,6 +1,5 @@
 function layout_data(data::Vector{<:AbstractArray}, arranger::DataArranger)
-    ad = arranger.(SingleTimeseriesLayout() => SingleArrayLayout(), data)
-    return ad
+    return arranger.(SingleTimeseriesLayout() => SingleArrayLayout(), data)
 end
 
 function default_data_loader(list::String="list_train";
@@ -33,4 +32,29 @@ _check_sizes(ŷ, y) = nothing  # pass-through, for constant label e.g. y = 1
 function mse(ŷ, y; agg=mean)
     _check_sizes(ŷ, y)
     return agg(abs2.(ŷ .- y))
+end
+
+function default_checkpoint_loader(chkp::Checkpointer;
+                                   rng,
+                                   model,
+                                   move_to_device,
+                                   init_learning_rate,
+                                   patience)
+    chkp_data, start_epoch = start(chkp; move_to_device)
+    state, log, plateau_detector = if isnothing(chkp_data)
+        st = Lux.Experimental.TrainState(rng, model,
+                                         Optimisers.Adam(init_learning_rate);
+                                         transform_variables=device)
+        # Plateau detector
+        pd = PlateauDetector(; scheduler=Stateful(Exp(init_learning_rate, 0.8f0)),
+                             patience)
+
+        st, [], pd
+    else
+        st, log, others = chkp_data
+        pd = others[:plateau_detector]
+        st, log, pd
+    end
+
+    return state, log, plateau_detector, start_epoch
 end

@@ -1,6 +1,6 @@
-# IMUReplRonin
+# IMUResearchRonin
 
-[![Build Status](https://github.com/imu-dev/IMUReplRonin.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/imu-dev/IMUReplRonin.jl/actions/workflows/CI.yml?query=branch%3Amain)
+[![Build Status](https://github.com/imu-dev/IMUResearchRonin.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/imu-dev/IMUResearchRonin.jl/actions/workflows/CI.yml?query=branch%3Amain)
 
 Julia implementation of "RoNIN: Robust Neural Inertial Navigation in the Wild"
 
